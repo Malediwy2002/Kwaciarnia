@@ -39,7 +39,8 @@ const list = [
 
 const input = document.querySelector('#searchInput');
 const container = document.querySelector("#grid-container");
-const up_btn = document.querySelector('#up_btn');
+const up_btn = document.querySelector('.up_btn');
+const cls_btn = document.querySelector('button.cls_btn');
 
 
 /* Stara funckja
@@ -91,6 +92,13 @@ function LoadList(list)
     }else container.innerHTML = "<h1>Brak wyników!</h1>";
 }
 
+function Show(element,state)
+{
+    //console.log('To ten: ',cls_btn.outerHTML);
+    if(state == 0 )element.classList.remove('vis');
+    else element.classList.add('vis');
+}
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -98,26 +106,61 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("input", () => {
     if(input.value)
         {
+            Show(cls_btn,1);
             let wynik = list.filter( (item) => {
                 if(item.nazwa.includes(input.value))return item;
             })
             LoadList(wynik);
         }
-        else LoadList(list);
+        else {
+            LoadList(list);
+            Show(cls_btn,0);
+        }
 })
-document.querySelector('#input_link').addEventListener("click", () => {
-    document.querySelector('#searchInput').focus();//Chciałem dać fous po przeniesieniu ,lecz nie zadziałąl w tym przypadku
-    //alert('Powinno być');
+
+    cls_btn.addEventListener("click" , () => {
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+})
+
+document.querySelector('#input_link').addEventListener("click", (e) => {
+
+    /* tutaj tak samo dałem Smooth dla calości
+    e.preventDefault();
+
+    input.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+    */
+
+    setTimeout(() => {
+        input.focus();
+    }, 700);
 
 })
 });
 window.addEventListener('scroll', () => {
     if(window.scrollY > 250)
     {
-        up_btn.style = "display:flex";    
-    }else up_btn.style = "display:none";  
+        //up_btn.style = "visibility:visible"; 
+        //up_btn.classList.add('vis');
+        Show(up_btn,1);
+    }else {
+        //up_btn.style = "visibility:hidden"; 
+        //up_btn.classList.remove('vis');
+        Show(up_btn,0);
+    } 
 })
 
 up_btn.addEventListener("click", () => {
+    //window.scrollTo({top:0,left:0,behavior:"smooth"}); dąłem dla całości smooth
     window.scrollTo(0,0);
+
+    e.preventDefault();
+
+    input.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 })
